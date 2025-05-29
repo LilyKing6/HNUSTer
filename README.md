@@ -5,7 +5,15 @@
 
 公开使用请注明作者名字😀
 
-贡献名单：LyFive Asthenia0412 y111y zmc-x FuZoe Y1H1Y
+贡献名单（直接或者间接）：
+
+- [LyFive](https://github.com/Lyfive/) 
+- [Asthenia0412](https://github.com/Asthenia0412) 
+- [y111y](https://github.com/y111y) 
+- [zmc-x](https://github.com/zmc-x) 
+- [FuZoe](https://github.com/FuZoe) 
+- [Y1H1Y](https://github.com/Y1H1Y) 
+- [KitraMGP](https://github.com/KitraMGP)
 
 下载到本地：
 ```bash
