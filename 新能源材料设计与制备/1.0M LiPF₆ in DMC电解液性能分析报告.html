@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1.0M LiPF6 in DMC 电解液性能分析</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+            background: #f0f2f5;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            padding: 50px 70px;
+            background: white;
+            position: absolute;
+            top: 0;
+            left: 0;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 统一标题栏样式 */
+        .slide-header {
+            border-left: 8px solid #2a5298;
+            padding-left: 25px;
+            margin-bottom: 30px;
+            flex-shrink: 0;
+        }
+
+        .slide-header h2 {
+            font-size: 2.3em;
+            color: #1e3c72;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .slide-header .subtitle {
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        /* 封面样式 - 与其他页统一风格 */
+        .cover-slide {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .cover-content {
+            background: white;
+            padding: 60px 100px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            border-left: 8px solid #2a5298;
+        }
+
+        .cover-content h1 {
+            font-size: 3em;
+            color: #1e3c72;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .cover-content .subtitle {
+            font-size: 1.5em;
+            color: #555;
+            margin-bottom: 40px;
+        }
+
+        .cover-content .author-info {
+            font-size: 1.2em;
+            color: #666;
+            line-height: 2;
+            padding-top: 30px;
+            border-top: 2px solid #eee;
+        }
+
+        /* 目录页样式 */
+        .toc-slide {
+            background: #fafafa;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            flex: 1;
+            align-content: center;
+        }
+
+        .toc-item {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s;
+            border-left: 5px solid #2a5298;
+        }
+
+        .toc-item:hover {
+            transform: translateX(10px);
+        }
+
+        .toc-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .toc-text {
+            font-size: 1.3em;
+            color: #333;
+            font-weight: 500;
+        }
+
+        /* 内容页通用 */
+        .content-slide {
+            background: #fafafa;
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            gap: 40px;
+            overflow: hidden;
+        }
+
+        .text-content {
+            flex: 1;
+            font-size: 1.15em;
+            line-height: 1.7;
+            color: #333;
+            overflow-y: auto;
+        }
+
+        .image-content {
+            flex: 0 0 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-content img {
+            max-width: 100%;
+            max-height: 350px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .image-caption {
+            text-align: center;
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        /* 表格样式 */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 1em;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: white;
+        }
+
+        .data-table th {
+            background: #2a5298;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:hover td {
+            background: #f8f9fa;
+        }
+
+        /* 列表样式 */
+        .feature-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        .feature-list li {
+            padding: 12px 18px;
+            margin: 10px 0;
+            background: white;
+            border-left: 4px solid #4CAF50;
+            border-radius: 5px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            font-size: 1.05em;
+        }
+
+        .feature-list li.negative {
+            border-left-color: #f44336;
+        }
+
+        .feature-list li.positive {
+            border-left-color: #4CAF50;
+        }
+
+        .feature-list li.warning {
+            border-left-color: #FF9800;
+        }
+
+        .feature-list li.info {
+            border-left-color: #2196F3;
+        }
+
+        /* 重点框 */
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            font-size: 1.1em;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        /* 两栏布局 */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            flex: 1;
+        }
+
+        .column-box {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .column-box h3 {
+            color: #2a5298;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        /* 对比卡片 */
+        .comparison-row {
+            display: flex;
+            gap: 20px;
+            margin: 15px 0;
+            align-items: stretch;
+        }
+
+        .comp-card {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .comp-card.highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .comp-card h4 {
+            color: #2a5298;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .comp-card.highlight h4 {
+            color: white;
+        }
+
+        .comp-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #f44336;
+            margin: 10px 0;
+        }
+
+        .comp-card.highlight .comp-value {
+            color: #FFD700;
+        }
+
+        /* 参考文献 */
+        .references {
+            font-size: 0.85em;
+            color: #555;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .references h4 {
+            color: #1e3c72;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .ref-list li {
+            margin: 5px 0;
+            padding-left: 15px;
+            text-indent: -15px;
+            line-height: 1.5;
+        }
+
+        /* 导航 */
+        .nav-buttons {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            display: flex;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            background: #2a5298;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .nav-btn:hover {
+            background: #1e3c72;
+            transform: translateY(-2px);
+        }
+
+        .page-indicator {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 15px;
+            font-size: 0.95em;
+            z-index: 1000;
+        }
+
+        /* 演讲稿 */
+        .speaker-notes {
+            position: fixed;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            max-width: 85%;
+            font-size: 1.05em;
+            display: none;
+            z-index: 999;
+            line-height: 1.6;
+        }
+
+        .speaker-notes.show {
+            display: block;
+        }
+
+        /* 机理说明框 */
+        .mechanism-box {
+            background: #fff3e0;
+            border-left: 4px solid #FF9800;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .mechanism-box h4 {
+            color: #e65100;
+            margin-bottom: 8px;
+        }
+
+        /* 流程步骤 */
+        .process-steps {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            gap: 15px;
+        }
+
+        .step {
+            flex: 1;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .step::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5em;
+            color: #2a5298;
+            font-weight: bold;
+        }
+
+        .step:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            width: 35px;
+            height: 35px;
+            background: #2a5298;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+        }
+
+        /* 数据对比条 */
+        .bar-comparison {
+            margin: 15px 0;
+        }
+
+        .bar-item {
+            margin: 10px 0;
+        }
+
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.95em;
+        }
+
+        .bar-bg {
+            background: #e0e0e0;
+            height: 25px;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .bar-fill.dmc {
+            background: #4CAF50;
+            width: 30%;
+        }
+
+        .bar-fill.ec {
+            background: #2196F3;
+            width: 100%;
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="slide-container">
+
+        <!-- 第1页：封面 - 统一风格 -->
+        <div class="slide cover-slide active" id="slide-1">
+            <div class="cover-content">
+                <h1>1.0M LiPF₆ in DMC<br>电解液性能分析</h1>
+                <div class="subtitle">新能源材料设计与制备课程汇报</div>
+                <div class="author-info">
+                    <strong>汇报人：</strong>XXX &nbsp;&nbsp;|&nbsp;&nbsp; <strong>班级：</strong>XXXX班<br>
+                    <strong>学号：</strong>XXXXXXXX &nbsp;&nbsp;|&nbsp;&nbsp; <strong>日期：</strong>2026年4月
+                </div>
+            </div>
+        </div>
+
+        <!-- 第2页：目录 - 新增 -->
+        <div class="slide toc-slide" id="slide-2">
+            <div class="slide-header">
+                <h2>汇报目录</h2>
+                <div class="subtitle">Contents</div>
+            </div>
+            <div class="toc-grid">
+                <div class="toc-item">
+                    <div class="toc-number">01</div>
+                    <div class="toc-text">研究背景与DMC简介</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">02</div>
+                    <div class="toc-text">DMC物理化学性质分析</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">03</div>
+                    <div class="toc-text">1.0M LiPF₆ in DMC性能优势</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">04</div>
+                    <div class="toc-text">单一DMC体系致命缺陷</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">05</div>
+                    <div class="toc-text">改进方案：混合溶剂设计</div>
+                </div>
+                <div class="toc-item">
+                    <div class="toc-number">06</div>
+                    <div class="toc-text">结论与展望</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第3页：DMC简介（原第2页） -->
+        <div class="slide content-slide" id="slide-3">
+            <div class="slide-header">
+                <h2>01 研究背景与DMC简介</h2>
+                <div class="subtitle">碳酸二甲酯 (Dimethyl Carbonate, DMC) 基础认知</div>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <div class="mechanism-box">
+                        <h4>为什么选择研究单一DMC体系？</h4>
+                        <p>理解单一组分溶剂的行为是设计多元电解液体系的基础。DMC作为最常用的电解液共溶剂，其单独使用时的性能边界对配方设计具有重要指导意义。</p>
+                    </div>
+
+                    <h3 style="color: #1e3c72; margin: 15px 0 10px 0;">DMC基本信息</h3>
+                    <ul class="feature-list">
+                        <li class="info"><strong>化学名称：</strong>碳酸二甲酯 (Dimethyl Carbonate)</li>
+                        <li class="info"><strong>分子式：</strong>C₃H₆O₃ 或 CH₃OCOOCH₃</li>
+                        <li class="info"><strong>分子量：</strong>90.08 g/mol</li>
+                        <li class="info"><strong>结构类型：</strong>链状线性碳酸酯 (Linear Carbonate)</li>
+                        <li class="info"><strong>外观状态：</strong>无色透明液体，具有轻微气味</li>
+                    </ul>
+
+                    <div class="highlight-box" style="margin-top: 15px;">
+                        <strong>核心特征：</strong>粘度最低 (0.59 mPa·s) + 介电常数最低 (3.1)<br>
+                        这一"双低"特性决定了其在电解液中的特殊角色
+                    </div>
+
+                    <div class="references">
+                        <h4>参考文献</h4>
+                        <ul class="ref-list">
+                            <li>[1] Xu K. Chemical Reviews, 2014, 114(23): 11503-11618.</li>
+                            <li>[2] 马国强等. 广州化工, 2011, 39(21): 41-42.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="image-content">
+                    <img src="https://kimi-web-img.moonshot.cn/img/www.sigmaaldrich.com/74235bfac0d6d9dccb4a5d55ede2611f442383b3.png" alt="DMC分子结构">
+                    <div class="image-caption">图1 DMC分子结构式 (Sigma-Aldrich)</div>
+
+                    <div style="margin-top: 30px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 100%;">
+                        <h4 style="color: #2a5298; margin-bottom: 15px; text-align: center;">分子结构特点</h4>
+                        <ul style="list-style: none; font-size: 0.95em; line-height: 2;">
+                            <li>• 对称的线性结构</li>
+                            <li>• 两个甲氧基 (-OCH₃)</li>
+                            <li>• 一个羰基 (C=O)</li>
+                            <li>• 无环状张力，柔性好</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第4页：物理化学性质（原第3页，内容扩充） -->
+        <div class="slide content-slide" id="slide-4">
+            <div class="slide-header">
+                <h2>02 DMC物理化学性质分析</h2>
+                <div class="subtitle">与EC（碳酸乙烯酯）的对比研究</div>
+            </div>
+            <div class="slide-content" style="flex-direction: column;">
+                <div class="two-column" style="flex: 1;">
+                    <div class="column-box">
+                        <h3>基础物性参数对比表</h3>
+                        <table class="data-table">
+                            <tr>
+                                <th>性质</th>
+                                <th>DMC</th>
+                                <th>EC</th>
+                                <th>评价</th>
+                            </tr>
+                            <tr>
+                                <td>熔点 (°C)</td>
+                                <td>3~4.6</td>
+                                <td>36.4</td>
+                                <td style="color:#4CAF50;">DMC低温优</td>
+                            </tr>
+                            <tr>
+                                <td>沸点 (°C)</td>
+                                <td>90~91</td>
+                                <td>248</td>
+                                <td style="color:#f44336;">DMC高温差</td>
+                            </tr>
+                            <tr>
+                                <td>粘度 (mPa·s)</td>
+                                <td><strong>0.59</strong></td>
+                                <td>1.90</td>
+                                <td style="color:#4CAF50;">DMC极低</td>
+                            </tr>
+                            <tr>
+                                <td>介电常数 (ε)</td>
+                                <td><strong>3.1</strong></td>
+                                <td>89.6</td>
+                                <td style="color:#f44336;">DMC极低</td>
+                            </tr>
+                            <tr>
+                                <td>闪点 (°C)</td>
+                                <td>15~18</td>
+                                <td>143</td>
+                                <td style="color:#f44336;">DMC易燃</td>
+                            </tr>
+                            <tr>
+                                <td>密度 (g/cm³)</td>
+                                <td>1.07</td>
+                                <td>1.32</td>
+                                <td>-</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="column-box">
+                        <h3>关键参数可视化对比</h3>
+                        <div class="bar-comparison">
+                            <p style="margin-bottom: 10px; font-weight: bold; color: #666;">粘度对比 (mPa·s，越低越好)</p>
+                            <div class="bar-item">
+                                <div class="bar-label"><span>DMC</span><span>0.59</span></div>
+                                <div class="bar-bg"><div class="bar-fill dmc">0.59</div></div>
+                            </div>
+                            <div class="bar-item">
+                                <div class="bar-label"><span>EC</span><span>1.90</span></div>
+                                <div class="bar-bg"><div class="bar-fill ec">1.90</div></div>
+                            </div>
+                        </div>
+
+                        <div class="bar-comparison" style="margin-top: 25px;">
+                            <p style="margin-bottom: 10px; font-weight: bold; color: #666;">介电常数对比 (ε，越高越好)</p>
+                            <div class="bar-item">
+                                <div class="bar-label"><span>DMC</span><span>3.1</span></div>
+                                <div class="bar-bg"><div class="bar-fill dmc">3.1</div></div>
+                            </div>
+                            <div class="bar-item">
+                                <div class="bar-label"><span>EC</span><span>89.6</span></div>
+                                <div class="bar-bg"><div class="bar-fill ec">89.6</div></div>
+                            </div>
+                        </div>
+
+                        <div class="mechanism-box" style="margin-top: 20px;">
+                            <h4>物性分析结论</h4>
+                            <p>DMC的"双低"特性（低粘度、低介电常数）是一把双刃剑：低粘度有利于离子传输，但低介电常数严重限制了其溶解锂盐和形成SEI膜的能力。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="references">
+                    <h4>参考文献</h4>
+                    <ul class="ref-list">
+                        <li>[3] Zhang S. Journal of Power Sources, 2006, 162(2): 1379-1394.</li>
+                        <li>[4] CIC化工信息网. DMC物性数据表.</li>
+                        <li>[5] Xu K. Chemical Reviews, 2014.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第5页：性能优势（原第4页，内容扩充） -->
+        <div class="slide content-slide" id="slide-5">
+            <div class="slide-header">
+                <h2>03 1.0M LiPF₆ in DMC性能优势</h2>
+                <div class="subtitle">单一DMC体系的潜在价值分析</div>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <div class="process-steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <h4>低温性能</h4>
+                            <p style="font-size: 0.9em;">熔点4°C<br>-20°C仍液态</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <h4>低粘度</h4>
+                            <p style="font-size: 0.9em;">0.59 mPa·s<br>离子迁移快</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <h4>倍率性能</h4>
+                            <p style="font-size: 0.9em;">适合快充<br>高功率输出</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">4</div>
+                            <h4>环保安全</h4>
+                            <p style="font-size: 0.9em;">无毒绿色<br>成本低</p>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #1e3c72; margin: 20px 0 10px 0;">详细优势分析</h3>
+                    <ul class="feature-list">
+                        <li class="positive">
+                            <strong>卓越的低温流动性</strong><br>
+                            熔点仅3~4°C，远低于EC的36.4°C。在-20°C环境下，DMC基电解液仍保持良好流动性，而EC基电解液会凝固失效。这使其成为低温电池的理想共溶剂。
+                        </li>
+                        <li class="positive">
+                            <strong>最高的离子迁移速率</strong><br>
+                            粘度0.59 mPa·s为常用溶剂中最低，比EC低约70%。根据Stokes-Einstein方程，扩散系数与粘度成反比，DMC中Li⁺扩散系数显著高于其他溶剂。
+                        </li>
+                        <li class="positive">
+                            <strong>优异的快充适应性</strong><br>
+                            低粘度降低了电荷转移阻抗，支持高倍率充放电（5C以上）。实验表明，含DMC的电解液在高倍率下容量保持率显著优于高粘度体系。
+                        </li>
+                        <li class="positive">
+                            <strong>环境友好与经济性</strong><br>
+                            DMC无毒、可生物降解，被称为"绿色溶剂"。合成工艺成熟，成本低于EC，且闪点虽低但燃烧产物清洁（主要生成CO₂和H₂O）。
+                        </li>
+                    </ul>
+
+                    <div class="references">
+                        <h4>参考文献</h4>
+                        <ul class="ref-list">
+                            <li>[6] Ding M. Electrochimica Acta, 2014, 138: 266-272.</li>
+                            <li>[7] Tighineanu A. eTransportation, 2024, 21: 100352.</li>
+                            <li>[8] 王等. 电源技术, 2020, 44(8): 1121-1124.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="image-content">
+                    <img src="https://kimi-web-img.moonshot.cn/img/berqwp-cdn.sfo3.cdn.digitaloceanspaces.com/880abf5745546b8830863d6328ec24081b00a288.webp" alt="电解液配制">
+                    <div class="image-caption">图2 锂离子电池电解液配制与组成示意图</div>
+
+                    <div style="margin-top: 20px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); width: 100%;">
+                        <h4 style="color: #2a5298; margin-bottom: 15px; text-align: center;">粘度与电导率关系</h4>
+                        <p style="font-size: 0.95em; line-height: 1.6; color: #555;">
+                            电解液电导率 σ = Σ(nᵢqᵢμᵢ)<br><br>
+                            其中离子迁移率 μ ∝ 1/η<br><br>
+                            <strong>结论：</strong>粘度η越低，离子迁移率μ越高，电导率σ越大
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第6页：致命缺陷（原第5页，内容扩充） -->
+        <div class="slide content-slide" id="slide-6">
+            <div class="slide-header">
+                <h2 style="color:#c62828;">04 单一DMC体系致命缺陷</h2>
+                <div class="subtitle">限制其实用化的关键科学问题</div>
+            </div>
+            <div class="slide-content">
+                <div class="text-content">
+                    <div class="highlight-box" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); margin-bottom: 20px;">
+                        <strong>核心结论：</strong>单一DMC电解液不能用于商用锂离子电池<br>
+                        根本原因在于：无法形成稳定的固体电解质界面膜 (SEI膜)
+                    </div>
+
+                    <h3 style="color: #1e3c72; margin-bottom: 10px;">四大致命缺陷</h3>
+                    <ul class="feature-list">
+                        <li class="negative">
+                            <strong>1. 无法形成有效SEI膜</strong><br>
+                            SEI膜是电池首次充放电时在负极表面形成的钝化层，由溶剂和锂盐还原分解产物组成。DMC的LUMO能级较高，还原稳定性强，在石墨负极表面难以发生有效还原分解，<strong>无法形成致密稳定的SEI膜</strong>。这是单一DMC体系失效的根本原因。
+                        </li>
+                        <li class="negative">
+                            <strong>2. 石墨层剥离与结构破坏</strong><br>
+                            缺乏SEI膜保护时，充电过程中DMC分子会随锂离子共嵌入石墨层间（cointercalation），导致石墨层间距膨胀、剥离，最终造成负极结构坍塌和容量快速衰减。实验显示，单一DMC体系电池首效极低（&lt;50%），几周内完全失效。
+                        </li>
+                        <li class="negative">
+                            <strong>3. 热稳定性差，安全隐患大</strong><br>
+                            沸点仅90~91°C，闪点仅15~18°C，远低于EC（沸点248°C，闪点143°C）。在高温环境或过充条件下，DMC极易挥发产生蒸汽压，增加电池鼓包、泄漏甚至热失控风险。
+                        </li>
+                        <li class="negative">
+                            <strong>4. 锂盐溶解能力不足</strong><br>
+                            介电常数仅3.1，远低于EC的89.6。根据库仑定律，低介电常数溶剂难以有效解离LiPF₆等锂盐，导致自由离子浓度低，实际离子电导率受限（实测约3-4 mS/cm，低于EC基体系）。
+                        </li>
+                    </ul>
+
+                    <div class="references">
+                        <h4>参考文献</h4>
+                        <ul class="ref-list">
+                            <li>[9] Peled E. Journal of The Electrochemical Society, 1979, 126(12): 2047.</li>
+                            <li>[10] Zhang L. Journal of Power Sources, 2014, 256: 138-148.</li>
+                            <li>[11] 戴梦等. 储能科学与技术, 2024, 13(5): 1429-1438.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="image-content">
+                    <img src="https://kimi-web-img.moonshot.cn/img/www.ias.tum.de/5c8b11cd10e41ce922942ea76d1bc5539ca182a6.png" alt="SEI膜形成">
+                    <div class="image-caption">图3 SEI膜在石墨负极表面形成机理示意图</div>
+
+                    <div style="margin-top: 20px; background: #ffebee; padding: 20px; border-radius: 10px; border-left: 4px solid #c62828; width: 100%;">
+                        <h4 style="color: #c62828; margin-bottom: 10px;">失效机理示意</h4>
+                        <p style="font-size: 0.95em; line-height: 1.6; color: #555;">
+                            <strong>正常情况：</strong>EC分解形成SEI膜 → 阻止溶剂共嵌入 → 电池稳定循环<br><br>
+                            <strong>DMC情况：</strong>无法形成SEI膜 → DMC嵌入石墨层 → 层状结构破坏 → 电池失效
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第7页：改进方案（原第6页，内容大幅扩充） -->
+        <div class="slide content-slide" id="slide-7">
+            <div class="slide-header">
+                <h2>05 改进方案：混合溶剂设计</h2>
+                <div class="subtitle">基于溶剂协同效应的电解液优化策略</div>
+            </div>
+            <div class="slide-content" style="flex-direction: column;">
+                <div style="flex: 1; display: flex; flex-direction: column; gap: 20px;">
+                    <div class="comparison-row">
+                        <div class="comp-card">
+                            <h4>EC（碳酸乙烯酯）</h4>
+                            <div class="comp-value">89.6</div>
+                            <div style="color: #666; margin-bottom: 10px;">高介电常数</div>
+                            <div style="text-align: left; font-size: 0.95em; line-height: 1.6;">
+                                ✅ 强极性，溶解锂盐<br>
+                                ✅ 高还原活性，易成膜<br>
+                                ✅ 热稳定性好<br>
+                                ❌ 粘度高 (1.90)<br>
+                                ❌ 熔点高 (36°C)
+                            </div>
+                        </div>
+                        <div style="font-size: 2em; color: #2a5298; display: flex; align-items: center; font-weight: bold;">+</div>
+                        <div class="comp-card">
+                            <h4>DMC（碳酸二甲酯）</h4>
+                            <div class="comp-value" style="color: #4CAF50;">0.59</div>
+                            <div style="color: #666; margin-bottom: 10px;">低粘度 (mPa·s)</div>
+                            <div style="text-align: left; font-size: 0.95em; line-height: 1.6;">
+                                ✅ 粘度最低<br>
+                                ✅ 低温流动性好<br>
+                                ✅ 改善倍率性能<br>
+                                ❌ 介电常数低 (3.1)<br>
+                                ❌ 无法单独成膜
+                            </div>
+                        </div>
+                        <div style="font-size: 2em; color: #2a5298; display: flex; align-items: center; font-weight: bold;">=</div>
+                        <div class="comp-card highlight">
+                            <h4 style="color: white;">EC:DMC混合体系</h4>
+                            <div class="comp-value" style="color: #FFD700; font-size: 1.5em;">理想电解液</div>
+                            <div style="color: rgba(255,255,255,0.9); margin-bottom: 10px;">协同优化</div>
+                            <div style="text-align: left; font-size: 0.95em; line-height: 1.6; color: rgba(255,255,255,0.95);">
+                                ✅ EC提供高介电常数<br>
+                                ✅ EC保证成膜能力<br>
+                                ✅ DMC降低粘度<br>
+                                ✅ DMC改善低温性<br>
+                                ✅ 宽温度适用范围
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="two-column" style="flex: 1;">
+                        <div class="column-box">
+                            <h3>常用配方设计</h3>
+                            <table class="data-table">
+                                <tr>
+                                    <th>配方类型</th>
+                                    <th>比例</th>
+                                    <th>适用场景</th>
+                                </tr>
+                                <tr>
+                                    <td>基础型</td>
+                                    <td>EC:DMC = 1:1</td>
+                                    <td>常规锂离子电池</td>
+                                </tr>
+                                <tr>
+                                    <td>低温型</td>
+                                    <td>EC:DMC = 3:7</td>
+                                    <td>低温环境应用</td>
+                                </tr>
+                                <tr>
+                                    <td>高电压型</td>
+                                    <td>EC:EMC:DMC = 1:1:1</td>
+                                    <td>高电压正极体系</td>
+                                </tr>
+                                <tr>
+                                    <td>快充型</td>
+                                    <td>EC:DEC:DMC = 1:1:1</td>
+                                    <td>快充动力电池</td>
+                                </tr>
+                            </table>
+
+                            <div class="mechanism-box" style="margin-top: 15px;">
+                                <h4>添加剂协同</h4>
+                                <p style="font-size: 0.95em;">实际配方中常加入5% FEC（氟代碳酸乙烯酯）或1-2% VC（碳酸亚乙烯酯）作为成膜添加剂，进一步改善SEI膜质量。</p>
+                            </div>
+                        </div>
+
+                        <div class="column-box">
+                            <h3>协同效应机理</h3>
+                            <div style="font-size: 1em; line-height: 1.8; color: #555;">
+                                <p style="margin-bottom: 15px;"><strong>1. 溶解-传输协同：</strong><br>
+                                EC的高介电常数(89.6)确保LiPF₆充分解离，提供充足载流子；DMC的低粘度(0.59)确保离子快速迁移，降低浓差极化。</p>
+
+                                <p style="margin-bottom: 15px;"><strong>2. 成膜-保护协同：</strong><br>
+                                EC在首次充电时优先还原分解，在石墨表面形成致密SEI膜；DMC不直接参与成膜，但可渗透SEI膜孔隙，提供离子传输通道。</p>
+
+                                <p style="margin-bottom: 15px;"><strong>3. 温度适应协同：</strong><br>
+                                EC提供高温稳定性（沸点248°C），DMC提供低温流动性（熔点4°C），混合后工作温度范围拓宽至-20°C~60°C。</p>
+
+                                <p><strong>4. 安全-性能平衡：</strong><br>
+                                EC提高闪点和热稳定性，DMC改善动力学性能，两者平衡了安全性与电化学性能。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="references">
+                    <h4>参考文献</h4>
+                    <ul class="ref-list">
+                        <li>[12] Zhang L. Journal of Power Sources, 2014, 256: 138-148.</li>
+                        <li>[13] 戴梦等. 储能科学与技术, 2024, 13(5): 1429-1438.</li>
+                        <li>[14] Xu K. Chemical Reviews, 2014.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第8页：结论（原第7页，内容扩充） -->
+        <div class="slide content-slide" id="slide-8">
+            <div class="slide-header">
+                <h2>06 结论与展望</h2>
+                <div class="subtitle">1.0M LiPF₆ in DMC体系综合评价</div>
+            </div>
+            <div class="slide-content" style="flex-direction: column;">
+                <div class="two-column" style="flex: 1;">
+                    <div class="column-box" style="border-top: 5px solid #f44336;">
+                        <h3 style="color: #c62828;">❌ 单一DMC：不能直接应用</h3>
+                        <ul class="feature-list" style="margin-top: 15px;">
+                            <li class="negative">
+                                <strong>成膜失效：</strong>无法在石墨负极形成稳定SEI膜，导致溶剂共嵌入和石墨层剥离
+                            </li>
+                            <li class="negative">
+                                <strong>热稳定性差：</strong>沸点仅90°C，闪点15°C，高温下挥发易燃，安全隐患大
+                            </li>
+                            <li class="negative">
+                                <strong>溶解能力不足：</strong>介电常数3.1过低，LiPF₆解离不充分，离子电导率受限
+                            </li>
+                            <li class="negative">
+                                <strong>循环寿命极短：</strong>缺乏SEI保护，电池首效&lt;50%，几周内完全失效
+                            </li>
+                        </ul>
+                        <div style="background: #ffebee; padding: 15px; border-radius: 8px; margin-top: 15px; text-align: center;">
+                            <strong style="color: #c62828;">实用化评分：★☆☆☆☆ (1/5)</strong>
+                        </div>
+                    </div>
+
+                    <div class="column-box" style="border-top: 5px solid #4CAF50;">
+                        <h3 style="color: #2e7d32;">✓ 作为共溶剂：价值巨大</h3>
+                        <ul class="feature-list" style="margin-top: 15px;">
+                            <li class="positive">
+                                <strong>粘度调节剂：</strong>0.59 mPa·s的极低粘度可显著降低混合体系粘度，提升离子迁移率
+                            </li>
+                            <li class="positive">
+                                <strong>低温改进剂：</strong>熔点4°C，有效降低电解液凝固点，改善低温性能
+                            </li>
+                            <li class="positive">
+                                <strong>倍率提升剂：</strong>降低电荷转移阻抗，支持高倍率充放电（&gt;5C）
+                            </li>
+                            <li class="positive">
+                                <strong>成本优化剂：</strong>绿色无毒，合成成本低，可部分替代昂贵溶剂
+                            </li>
+                        </ul>
+                        <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; margin-top: 15px; text-align: center;">
+                            <strong style="color: #2e7d32;">共溶剂评分：★★★★★ (5/5)</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="highlight-box" style="margin: 20px 0;">
+                    <strong>核心结论：</strong>DMC是优秀的<strong style="color: #FFD700;">共溶剂</strong>，但绝不能作为<strong style="color: #ff6b6b;">单一溶剂</strong>使用！<br>
+                    实际应用必须与EC等环状碳酸酯配合使用（推荐比例 EC:DMC = 1:1），发挥协同优化效应。
+                </div>
+
+                <div class="column-box" style="flex: 0 0 auto;">
+                    <h3>未来研究方向展望</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; font-size: 0.95em;">
+                        <div>
+                            <strong style="color: #2a5298;">1. 新型添加剂开发</strong><br>
+                            开发能在DMC基体系中有效成膜的新型添加剂，如含氟化合物、含硫化合物等，降低对EC的依赖。
+                        </div>
+                        <div>
+                            <strong style="color: #2a5298;">2. 高浓度锂盐体系</strong><br>
+                            探索高浓度LiPF₆（&gt;2M）或局部高浓度体系，利用阴离子衍生SEI膜，可能突破DMC无法成膜的限制。
+                        </div>
+                        <div>
+                            <strong style="color: #2a5298;">3. 新型负极匹配</strong><br>
+                            研究DMC与硅基负极、钛酸锂负极等的兼容性，这些负极可能不需要传统SEI膜保护。
+                        </div>
+                    </div>
+                </div>
+
+                <div class="references">
+                    <h4>参考文献</h4>
+                    <ul class="ref-list">
+                        <li>[15] Yamada Y. Journal of The Electrochemical Society, 2015, 162(14): A2409.</li>
+                        <li>[16] Wang J. Advanced Energy Materials, 2020, 10(35): 2001235.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第9页：致谢 -->
+        <div class="slide cover-slide" id="slide-9">
+            <div class="cover-content">
+                <h1>谢谢聆听</h1>
+                <div class="subtitle">欢迎各位老师同学提问指正</div>
+                <div style="margin-top: 40px; text-align: left; font-size: 1em; line-height: 1.8; color: #555;">
+                    <p style="margin-bottom: 15px; font-weight: bold; color: #1e3c72;">主要参考文献：</p>
+                    <div style="font-size: 0.9em;">
+                        [1] Xu K. Nonaqueous Liquid Electrolytes for Lithium-Based Rechargeable Batteries. <em>Chem. Rev.</em> 2014, 114, 11503.<br>
+                        [2] Zhang S. A review on electrolyte additives. <em>J. Power Sources</em> 2006, 162, 1379.<br>
+                        [3] Ding M. Insight into solid electrolyte interphase. <em>Electrochim. Acta</em> 2014, 138, 266.<br>
+                        [4] Tighineanu A. Electrolyte formulations. <em>eTransportation</em> 2024, 21, 100352.<br>
+                        [5] 戴梦等. 锂离子电池电解液研究进展. <em>储能科学与技术</em> 2024, 13, 1429.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 导航 -->
+    <div class="nav-buttons">
+        <button class="nav-btn" onclick="prevSlide()">上一页</button>
+        <button class="nav-btn" onclick="nextSlide()">下一页</button>
+        <button class="nav-btn" onclick="toggleNotes()">演讲稿</button>
+    </div>
+
+    <div class="page-indicator">
+        <span id="current-page">1</span> / <span id="total-pages">9</span>
+    </div>
+
+    <div class="speaker-notes" id="speaker-notes">
+        <span id="notes-text">演讲稿内容...</span>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 9;
+        const notes = {
+            1: "大家好，今天我汇报的题目是《1.0M LiPF₆ in DMC电解液性能分析》。我将从DMC的基本性质、该体系的优缺点以及实际应用建议三个方面进行系统分析。",
+            2: "这是本次汇报的目录。我将依次介绍研究背景与DMC简介、物理化学性质分析、性能优势、致命缺陷、改进方案以及最终结论。",
+            3: "首先介绍DMC的基本信息。DMC全称碳酸二甲酯，是一种链状线性碳酸酯。它具有两个非常突出的特点：粘度最低和介电常数最低。这一双低特性决定了它在电解液中的特殊角色。",
+            4: "这一页详细对比了DMC与EC的关键物理参数。注意DMC粘度仅0.59，远低于EC的1.90，这有利于离子快速迁移；但介电常数仅3.1，远低于EC的89.6，这意味着它溶解锂盐的能力很弱。这种物性上的矛盾是理解DMC行为的关键。",
+            5: "基于低粘度和低熔点，DMC体系具有四大优势：卓越的低温流动性、最高的离子迁移速率、优异的快充适应性以及环境友好性。这些优势使其成为理想的共溶剂选择。",
+            6: "但是，单一DMC体系存在致命缺陷。最核心的是无法形成SEI膜，这会导致石墨层剥离和电池快速失效。此外，沸点过低和溶解能力不足也严重限制了其实用化。",
+            7: "针对这些问题，工业界采用混合溶剂策略。EC提供高介电常数和成膜能力，DMC提供低粘度和低温性能，两者协同达到实用要求。常用配方为EC:DMC等于1比1，也可根据需求调整比例。",
+            8: "总结来看，单一DMC由于无法成膜和热稳定性差，不能直接用于商用电池。但作为共溶剂，DMC能显著改善体系性能，具有不可替代的价值。未来研究可探索新型添加剂或高浓度体系来进一步拓展DMC的应用。",
+            9: "我的汇报到此结束，感谢各位的聆听，欢迎老师和同学们提出宝贵意见！"
+        };
+
+        function showSlide(n) {
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+            document.getElementById(`slide-${n}`).classList.add('active');
+            document.getElementById('current-page').textContent = n;
+            document.getElementById('notes-text').textContent = notes[n] || '';
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        function toggleNotes() {
+            const notesEl = document.getElementById('speaker-notes');
+            notesEl.classList.toggle('show');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'n' || e.key === 'N') {
+                toggleNotes();
+            }
+        });
+
+        showSlide(1);
+    </script>
+</body>
+</html>
